@@ -61,28 +61,26 @@ void CFG::print() {
     }
     cout << "}" << endl;
 
-    // Verzamel en sorteer productie regels
+    // Print production rules
     cout << "P = {" << endl;
     vector<string> productionStrings;
     for (const auto& rule : productionRules) {
         for (const auto& prod : rule.second) {
-            string productionStr = "  " + rule.first + " -> `" + prod + "`\n";
-            productionStrings.push_back(productionStr);
+            productionStrings.push_back("  " + rule.first + " -> `" + prod + "`");
         }
     }
 
-    // Sorteer de productie strings op ASCII-volgorde
+    // Sort and print productions in ASCII order
     sort(productionStrings.begin(), productionStrings.end());
-
-    // Print de gesorteerde productie strings
     for (const auto& prodStr : productionStrings) {
-        cout << prodStr;
+        cout << prodStr << endl;
     }
     cout << "}" << endl;
 
     // Print start symbol
     cout << "S = " << startSymbol << endl;
 }
+
 
 
 
@@ -533,17 +531,6 @@ void CFG::breakLongBodies() {
 
 
 
-void CFG::setStartSymbol(const string& start) {
-    startSymbol = start;
-}
-
-void CFG::addNonTerminal(const string& nonTerminal) {
-    nonTerminals.insert(nonTerminal);
-}
-
-void CFG::addProduction(const string& head, const string& body) {
-    productionRules[head].push_back(body);
-}
 
 void CFG::toCNF() {
     cout << "Original CFG:\n\n";

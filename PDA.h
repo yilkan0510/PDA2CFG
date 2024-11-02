@@ -1,12 +1,10 @@
 #ifndef PDA_H
 #define PDA_H
 
+#include "CFG.h"
 #include <string>
-#include <vector>
 #include <map>
-#include <set>
-#include <tuple>
-#include "CFG.h"  // Include the CFG class
+#include <vector>
 
 class PDA {
 private:
@@ -14,12 +12,14 @@ private:
     std::string startStack;
     std::set<std::string> states;
     std::set<char> alphabet;
-    std::set<char> stackAlphabet;
-    std::vector<std::tuple<std::string, char, std::string, std::string, std::vector<std::string>>> transitions;
+    std::set<std::string> stackAlphabet;
+    std::vector<std::tuple<std::string, std::string, std::string, std::string, std::vector<std::string>>> transitions;
+
+    void loadFromFile(const std::string &filename);
 
 public:
-    PDA(const std::string& filename);
-    CFG toCFG() const;  // Methode om PDA naar CFG te converteren
+    PDA(const std::string &filename);
+    CFG toCFG();
 };
 
 #endif // PDA_H

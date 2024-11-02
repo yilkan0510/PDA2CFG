@@ -15,10 +15,7 @@ using namespace nlohmann;
 
 class CFG {
 private:
-    set<string> nonTerminals;
-    set<char> terminals;
-    map<string, vector<string>> productionRules;
-    string startSymbol;
+
     int postUnitProdCount;
     int postUselessProdCount;
 
@@ -32,9 +29,10 @@ public:
     CFG() = default;  // Constructor zonder parameter voor aanmaak via PDA
     CFG(string Filename);
 
-    void setStartSymbol(const string& start);
-    void addNonTerminal(const string& nonTerminal);
-    void addProduction(const string& head, const string& body);
+    set<string> nonTerminals;
+    set<char> terminals;
+    map<string, vector<string>> productionRules;
+    string startSymbol;
 
     void print();
     void toCNF(); // Voegt de CNF-conversiemethode toe
