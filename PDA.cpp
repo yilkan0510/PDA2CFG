@@ -86,20 +86,31 @@ CFG PDA::toCFG() {
         std::string varFromTo = "[" + from + "," + stacktop + "," + to + "]";
 
         if (replacement.empty()) {
-            // If replacement is empty, it represents ε
+            // Handle epsilon production
             cfg.productionRules[varFromTo].push_back(input);
         } else if (replacement.size() == 1) {
-            // Single replacement symbol
-            std::string repVar = "[" + to + "," + replacement[0] + "," + to + "]";
-            cfg.productionRules[varFromTo].push_back(input + " " + repVar);
-        } else if (replacement.size() == 2) {
-            // Two replacement symbols
+            // Generate production rules for a single replacement symbol
             for (const auto &r : states) {
-                std::string repVar1 = "[" + to + "," + replacement[0] + "," + r + "]";
-                std::string repVar2 = "[" + r + "," + replacement[1] + "," + to + "]";
-                cfg.productionRules[varFromTo].push_back(input + " " + repVar1 + " " + repVar2);
+                std::string repVar = "[" + to + "," + replacement[0] + "," + r + "]";
+                cfg.productionRules[varFromTo].push_back(input + " " + repVar);
+            }
+        } else if (replacement.size() == 2) {
+            // Generate production rules for two replacement symbols
+            for (const auto &r : states) {
+                for (const auto &s : states) {
+                    std::string repVar1 = "[" + to + "," + replacement[0] + "," + r + "]";
+                    std::string repVar2 = "[" + r + "," + replacement[1] + "," + s + "]";
+                    cfg.productionRules[varFromTo].push_back(input + " " + repVar1 + " " + repVar2);
+                }
             }
         }
+    }
+
+
+    // Ensure all expected productions are present by removing duplicates
+    for (auto &rule : cfg.productionRules) {
+        std::sort(rule.second.begin(), rule.second.end());
+        rule.second.erase(std::unique(rule.second.begin(), rule.second.end()), rule.second.end());
     }
 
     return cfg;
