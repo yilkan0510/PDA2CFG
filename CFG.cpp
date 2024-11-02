@@ -61,19 +61,22 @@ void CFG::print() {
     }
     cout << "}" << endl;
 
-    // Print production rules
+    // Verzamel en sorteer productie regels
     cout << "P = {" << endl;
     vector<string> productionStrings;
     for (const auto& rule : productionRules) {
         for (const auto& prod : rule.second) {
-            productionStrings.push_back("  " + rule.first + " -> `" + prod + "`");
+            string productionStr = "  " + rule.first + " -> `" + prod + "`\n";
+            productionStrings.push_back(productionStr);
         }
     }
 
-    // Sort and print productions in ASCII order
+    // Sorteer de productie strings op ASCII-volgorde
     sort(productionStrings.begin(), productionStrings.end());
+
+    // Print de gesorteerde productie strings
     for (const auto& prodStr : productionStrings) {
-        cout << prodStr << endl;
+        cout << prodStr;
     }
     cout << "}" << endl;
 
