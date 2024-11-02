@@ -66,7 +66,7 @@ void CFG::print() {
     vector<string> productionStrings;
     for (const auto& rule : productionRules) {
         for (const auto& prod : rule.second) {
-            string productionStr = "  " + rule.first + " -> `" + prod + "`\n";
+            string productionStr = "    " + rule.first + "   -> `" + prod + "`\n";
             productionStrings.push_back(productionStr);
         }
     }

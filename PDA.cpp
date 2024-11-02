@@ -86,16 +86,16 @@ CFG PDA::toCFG() {
         std::string varFromTo = "[" + from + "," + stacktop + "," + to + "]";
 
         if (replacement.empty()) {
-            // Handle epsilon production
+            // Epsilon (empty) production for direct transition
             cfg.productionRules[varFromTo].push_back(input);
         } else if (replacement.size() == 1) {
-            // Generate production rules for a single replacement symbol
+            // Single replacement, add rules for all intermediate states
             for (const auto &r : states) {
                 std::string repVar = "[" + to + "," + replacement[0] + "," + r + "]";
                 cfg.productionRules[varFromTo].push_back(input + " " + repVar);
             }
         } else if (replacement.size() == 2) {
-            // Generate production rules for two replacement symbols
+            // Two replacements, generate combinations of intermediate states
             for (const auto &r : states) {
                 for (const auto &s : states) {
                     std::string repVar1 = "[" + to + "," + replacement[0] + "," + r + "]";
@@ -105,7 +105,6 @@ CFG PDA::toCFG() {
             }
         }
     }
-
 
     // Ensure all expected productions are present by removing duplicates
     for (auto &rule : cfg.productionRules) {
