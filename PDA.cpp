@@ -93,19 +93,14 @@ CFG PDA::toCFG() {
             std::string repVar = "[" + to + "," + replacement[0] + "," + to + "]";
             cfg.productionRules[varFromTo].push_back(input + " " + repVar);
         } else if (replacement.size() == 2) {
-            // Two replacement symbols: generate productions for specific combinations as per expected output
-            if (input == "0" && stacktop == "X" && from == "q") {
-                cfg.productionRules["[q,X,p]"].push_back("0 [q,X,p] [p,X,p]");
-                cfg.productionRules["[q,X,p]"].push_back("0 [q,X,q] [q,X,p]");
-                cfg.productionRules["[q,X,q]"].push_back("0 [q,X,p] [p,X,q]");
-                cfg.productionRules["[q,X,q]"].push_back("0 [q,X,q] [q,X,q]");
-            } else if (input == "0" && stacktop == "Z0" && from == "q") {
-                cfg.productionRules["[q,Z0,p]"].push_back("0 [q,X,p]");
-                cfg.productionRules["[q,Z0,q]"].push_back("0 [q,X,q]");
+            // Two replacement symbols
+            for (const auto &r : states) {
+                std::string repVar1 = "[" + to + "," + replacement[0] + "," + r + "]";
+                std::string repVar2 = "[" + r + "," + replacement[1] + "," + to + "]";
+                cfg.productionRules[varFromTo].push_back(input + " " + repVar1 + " " + repVar2);
             }
         }
     }
 
     return cfg;
 }
-
