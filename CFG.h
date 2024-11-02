@@ -29,7 +29,12 @@ private:
     void breakLongBodies();
 
 public:
+    CFG() = default;  // Constructor zonder parameter voor aanmaak via PDA
     CFG(string Filename);
+
+    void setStartSymbol(const string& start);
+    void addNonTerminal(const string& nonTerminal);
+    void addProduction(const string& head, const string& body);
 
     void print();
     void toCNF(); // Voegt de CNF-conversiemethode toe

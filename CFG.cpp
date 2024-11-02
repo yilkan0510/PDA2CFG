@@ -533,7 +533,17 @@ void CFG::breakLongBodies() {
 
 
 
+void CFG::setStartSymbol(const string& start) {
+    startSymbol = start;
+}
 
+void CFG::addNonTerminal(const string& nonTerminal) {
+    nonTerminals.insert(nonTerminal);
+}
+
+void CFG::addProduction(const string& head, const string& body) {
+    productionRules[head].push_back(body);
+}
 
 void CFG::toCNF() {
     cout << "Original CFG:\n\n";

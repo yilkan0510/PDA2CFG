@@ -19,7 +19,7 @@ private:
 
 public:
     PDA(const std::string& filename);
-    CFG toCFG() const;  // Method to convert PDA to CFG
+    CFG toCFG() const;  // Methode om PDA naar CFG te converteren
 };
 
 #endif // PDA_H

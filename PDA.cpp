@@ -15,7 +15,7 @@ PDA::PDA(const string& filename) {
     json j;
     input >> j;
 
-    // Load PDA details
+    // Laad PDA details
     startState = j["StartState"];
     startStack = j["StartStack"];
     for (const auto& state : j["States"]) {
@@ -41,7 +41,7 @@ CFG PDA::toCFG() const {
     CFG cfg;
     cfg.setStartSymbol("S");
 
-    // Add productions for each state and stack symbol combination
+    // Voeg producties toe voor elke combinatie van status en stacksymbool
     for (const auto& from : states) {
         for (const auto& stackSym : stackAlphabet) {
             for (const auto& to : states) {
@@ -51,26 +51,26 @@ CFG PDA::toCFG() const {
         }
     }
 
-    // Start production
-    cfg.addProduction("S", {"[" + startState + "," + startStack + "," + startState + "]"});
-    cfg.addProduction("S", {"[" + startState + "," + startStack + "," + "q" + "]"});
+    // Start productie
+    cfg.addProduction("S", "[" + startState + "," + startStack + "," + startState + "]");
 
-    // Add productions based on PDA transitions
+    // Voeg producties toe gebaseerd op PDA-transities
     for (const auto& [from, input, stackTop, to, replacement] : transitions) {
-        string head = "[" + from + "," + string(1, stackTop) + "," + to + "]";
+        string head = "[" + from + "," + stackTop + "," + to + "]";
+
 
         if (replacement.empty()) {
-            // No stack replacement, single terminal production
-            cfg.addProduction(head, {string(1, input)});
+            // Geen stackvervanging, enkele terminal productie
+            cfg.addProduction(head, string(1, input));
         } else if (replacement.size() == 1) {
-            // Replacement of one stack symbol
+            // Vervanging van één stacksymbool
             string body = string(1, input) + " [" + to + "," + replacement[0] + "," + to + "]";
-            cfg.addProduction(head, {body});
+            cfg.addProduction(head, body);
         } else if (replacement.size() == 2) {
-            // Replacement of two stack symbols
-            string body1 = "[" + from + "," + replacement[0] + "," + "q" + "]";
-            string body2 = "[" + to + "," + replacement[1] + "," + "q" + "]";
-            cfg.addProduction(head, {body1 + " " + body2});
+            // Vervanging van twee stack symbolen
+            string body1 = "[" + from + "," + replacement[0] + "," + to + "]";
+            string body2 = "[" + to + "," + replacement[1] + "," + to + "]";
+            cfg.addProduction(head, body1 + " " + body2);
         }
     }
 
