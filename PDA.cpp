@@ -52,14 +52,14 @@ void PDA::loadFromFile(const std::string &filename) {
 CFG PDA::toCFG() {
     CFG cfg;
 
-    // Define the start symbol
+    // Define start symbol
     cfg.startSymbol = "S";
     cfg.nonTerminals.insert("S");
 
     // Define terminals (same as alphabet)
     cfg.terminals = alphabet;
 
-    // Generate non-terminals of the form [p,X,q] for each combination of states and stack symbols
+    // Generate non-terminals of the form [p,X,q] for each state and stack symbol combination
     for (const auto &p : states) {
         for (const auto &q : states) {
             for (const auto &X : stackAlphabet) {
@@ -75,7 +75,7 @@ CFG PDA::toCFG() {
         cfg.productionRules["S"].push_back(startVar);
     }
 
-    // Translate each PDA transition into CFG productions
+    // Explicitly handle each transition
     for (const auto &transition : transitions) {
         std::string from = std::get<0>(transition);
         std::string input = std::get<1>(transition);
@@ -86,7 +86,7 @@ CFG PDA::toCFG() {
         std::string varFromTo = "[" + from + "," + stacktop + "," + to + "]";
 
         if (replacement.empty()) {
-            // Handle epsilon transition if input is empty
+            // Direct epsilon transition
             if (input.empty()) {
                 cfg.productionRules[varFromTo].push_back("");
             } else {
@@ -94,18 +94,18 @@ CFG PDA::toCFG() {
             }
         }
         else if (replacement.size() == 1) {
-            // Handle single replacement: add intermediate rules with states correctly varied
+            // Single replacement with intermediate states
             for (const auto &r : states) {
                 std::string repVar = "[" + to + "," + replacement[0] + "," + r + "]";
                 if (input.empty()) {
-                    cfg.productionRules[varFromTo].push_back(repVar); // Epsilon case
+                    cfg.productionRules[varFromTo].push_back(repVar);
                 } else {
                     cfg.productionRules[varFromTo].push_back(input + " " + repVar);
                 }
             }
         }
         else if (replacement.size() == 2) {
-            // Handle double replacement: use two intermediate states
+            // Double replacement with specific intermediate states
             for (const auto &r : states) {
                 for (const auto &s : states) {
                     std::string repVar1 = "[" + to + "," + replacement[0] + "," + r + "]";
@@ -120,7 +120,7 @@ CFG PDA::toCFG() {
         }
     }
 
-    // Deduplicate and sort production rules
+    // Sort and deduplicate production rules
     for (auto &rule : cfg.productionRules) {
         std::sort(rule.second.begin(), rule.second.end());
         rule.second.erase(std::unique(rule.second.begin(), rule.second.end()), rule.second.end());
@@ -128,3 +128,4 @@ CFG PDA::toCFG() {
 
     return cfg;
 }
+
