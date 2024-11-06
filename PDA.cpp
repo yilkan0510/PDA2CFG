@@ -52,14 +52,14 @@ void PDA::loadFromFile(const std::string &filename) {
 CFG PDA::toCFG() {
     CFG cfg;
 
-    // Define start symbol
+    // Define the start symbol
     cfg.startSymbol = "S";
     cfg.nonTerminals.insert("S");
 
     // Define terminals (same as alphabet)
     cfg.terminals = alphabet;
 
-    // Generate non-terminals of the form [p,X,q]
+    // Generate non-terminals of the form [p,X,q] for each combination of states and stack symbols
     for (const auto &p : states) {
         for (const auto &q : states) {
             for (const auto &X : stackAlphabet) {
@@ -86,27 +86,41 @@ CFG PDA::toCFG() {
         std::string varFromTo = "[" + from + "," + stacktop + "," + to + "]";
 
         if (replacement.empty()) {
-            // Epsilon (empty) production for direct transition
-            cfg.productionRules[varFromTo].push_back(input);
-        } else if (replacement.size() == 1) {
-            // Single replacement, add rules for all intermediate states
+            // Handle epsilon transition if input is empty
+            if (input.empty()) {
+                cfg.productionRules[varFromTo].push_back("");
+            } else {
+                cfg.productionRules[varFromTo].push_back(input);
+            }
+        }
+        else if (replacement.size() == 1) {
+            // Handle single replacement: add intermediate rules with states correctly varied
             for (const auto &r : states) {
                 std::string repVar = "[" + to + "," + replacement[0] + "," + r + "]";
-                cfg.productionRules[varFromTo].push_back(input + " " + repVar);
+                if (input.empty()) {
+                    cfg.productionRules[varFromTo].push_back(repVar); // Epsilon case
+                } else {
+                    cfg.productionRules[varFromTo].push_back(input + " " + repVar);
+                }
             }
-        } else if (replacement.size() == 2) {
-            // Two replacements, generate combinations of intermediate states
+        }
+        else if (replacement.size() == 2) {
+            // Handle double replacement: use two intermediate states
             for (const auto &r : states) {
                 for (const auto &s : states) {
                     std::string repVar1 = "[" + to + "," + replacement[0] + "," + r + "]";
                     std::string repVar2 = "[" + r + "," + replacement[1] + "," + s + "]";
-                    cfg.productionRules[varFromTo].push_back(input + " " + repVar1 + " " + repVar2);
+                    if (input.empty()) {
+                        cfg.productionRules[varFromTo].push_back(repVar1 + " " + repVar2);
+                    } else {
+                        cfg.productionRules[varFromTo].push_back(input + " " + repVar1 + " " + repVar2);
+                    }
                 }
             }
         }
     }
 
-    // Ensure all expected productions are present by removing duplicates
+    // Deduplicate and sort production rules
     for (auto &rule : cfg.productionRules) {
         std::sort(rule.second.begin(), rule.second.end());
         rule.second.erase(std::unique(rule.second.begin(), rule.second.end()), rule.second.end());
