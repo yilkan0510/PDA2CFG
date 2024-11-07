@@ -19,6 +19,7 @@ private:
 
 public:
     PDA(const std::string &filename);
+    std::map<std::string, std::vector<std::string>> getCFGProductions();
     CFG toCFG();
 };
 
