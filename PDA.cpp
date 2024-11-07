@@ -116,6 +116,9 @@ CFG PDA::toCFG() {
     // Add production rules
     cfg.productionRules = getCFGProductions();
 
+    // Set start symbol
+    cfg.startSymbol = "S";
+
     return cfg;
 }
 
