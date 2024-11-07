@@ -66,9 +66,14 @@ std::map<std::string, std::vector<std::string>> PDA::getCFGProductions() {
         std::vector<std::string> replacement = std::get<4>(transition);
 
         if (replacement.empty()) {
-            // Case 1: Empty replacement (ε production)
+            // Case 1: Empty replacement
             std::string head = "[" + fromState + "," + stackTop + "," + toState + "]";
-            productions[head].push_back(""); // epsilon production
+            // If inputSymbol is not empty, use it as production; otherwise, add ε (empty production)
+            if (!inputSymbol.empty()) {
+                productions[head].push_back(inputSymbol);
+            } else {
+                productions[head].push_back(""); // epsilon production
+            }
         } else if (replacement.size() == 1) {
             // Case 2: Single symbol replacement
             for (const auto &intermediateState : states) {
@@ -90,6 +95,7 @@ std::map<std::string, std::vector<std::string>> PDA::getCFGProductions() {
 
     return productions;
 }
+
 
 
 
