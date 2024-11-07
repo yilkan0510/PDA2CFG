@@ -65,13 +65,24 @@ void CFG::print() {
     cout << "P = {" << endl;
     vector<string> productionStrings;
     for (const auto& rule : productionRules) {
+        // Sorteer lege producties eerst
+        vector<string> epsilonProductions;
+        vector<string> otherProductions;
+
         for (const auto& prod : rule.second) {
-            string productionStr = "    " + rule.first + "   -> `" + prod + "`\n";
-            productionStrings.push_back(productionStr);
+            if (prod.empty()) {
+                epsilonProductions.push_back("    " + rule.first + "   -> ` `\n");
+            } else {
+                otherProductions.push_back("    " + rule.first + "   -> `" + prod + "`\n");
+            }
         }
+
+        // Voeg de gesorteerde producties toe aan de uitvoer
+        productionStrings.insert(productionStrings.end(), epsilonProductions.begin(), epsilonProductions.end());
+        productionStrings.insert(productionStrings.end(), otherProductions.begin(), otherProductions.end());
     }
 
-    // Sorteer de productie strings op ASCII-volgorde
+    // Sorteer de productie strings op ASCII-volgorde (behalve de nieuwe volgorde binnen elke kop)
     sort(productionStrings.begin(), productionStrings.end());
 
     // Print de gesorteerde productie strings
@@ -83,6 +94,7 @@ void CFG::print() {
     // Print start symbol
     cout << "S = " << startSymbol << endl;
 }
+
 
 
 
