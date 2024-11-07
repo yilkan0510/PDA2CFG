@@ -393,7 +393,7 @@ void CFG::removeUselessSymbols() {
 }
 
 void CFG::replaceTerminalsInBadBodies() {
-    // Map of terminals to their corresponding non-terminals for direct replacements
+    // map of terminals to their corresponding non-terminals for direct replacements
     map<char, string> terminalToNonTerminal = {
             {'a', "A"},
             {'b', "B"}
@@ -417,7 +417,7 @@ void CFG::replaceTerminalsInBadBodies() {
             bool bodyModified = false;
             set<char> uniqueTerminals;  // Track unique terminals in the body
 
-            // First pass: collect unique terminals
+            // first pass: collect unique terminals
             for (char symbol : body) {
                 if (terminals.count(symbol)) {
                     uniqueTerminals.insert(symbol);
@@ -427,7 +427,7 @@ void CFG::replaceTerminalsInBadBodies() {
             // Determine if we need new variables
             bool useNewVariables = uniqueTerminals.size() > 1;
 
-            // Process each symbol in the body
+            // process each symbol in the body
             for (char symbol : body) {
                 if (terminals.count(symbol) && body.size() >= 2) {
                     if (useNewVariables) {
@@ -441,7 +441,7 @@ void CFG::replaceTerminalsInBadBodies() {
                         }
                         newBody += terminalToVar[symbol];
                     } else if (terminalToNonTerminal.find(symbol) != terminalToNonTerminal.end()) {
-                        // Replace with corresponding non-terminal if exists
+                        // replace with corresponding non-terminal if exists
                         newBody += terminalToNonTerminal[symbol];
                     }
                     bodyModified = true;
@@ -456,7 +456,7 @@ void CFG::replaceTerminalsInBadBodies() {
         rule.second = updatedBodies;
     }
 
-    // Print results
+    // Print resultss
     cout << "    Added " << newVariableCount << " new variables: {";
     for (auto it = terminalToVar.begin(); it != terminalToVar.end(); ++it) {
         cout << it->second;

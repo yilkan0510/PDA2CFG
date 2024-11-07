@@ -66,7 +66,7 @@ std::map<std::string, std::vector<std::string>> PDA::getCFGProductions() {
         std::vector<std::string> replacement = std::get<4>(transition);
 
         if (replacement.empty()) {
-            // Case 1: Empty replacement
+            // Case 1: empty replacement
             std::string head = "[" + fromState + "," + stackTop + "," + toState + "]";
             // If inputSymbol is not empty, use it as production; otherwise, add ε (empty production)
             if (!inputSymbol.empty()) {
